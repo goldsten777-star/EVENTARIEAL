@@ -36,3 +36,11 @@ npm run dev
 - **Redirect URLs**: להוסיף `http://localhost:3000/**` ואת כתובת הפרודקשן עם `/**`. קישורי אישור ההרשמה ואיפוס הסיסמה חוזרים אל `/auth/callback`.
 
 ב-**Authentication → SMTP Settings**: לפני פתיחה למשתמשים אמיתיים יש לחבר ספק SMTP (למשל Resend). שירות המייל המובנה של Supabase מוגבל לכמה מיילים בשעה.
+
+## פריסה (Vercel)
+
+- פרויקט Vercel: `eventarial` (צוות hanoh), כתובת ייצור: https://eventarial.vercel.app
+- משתני סביבה מוגדרים ב-Vercel (Production, Preview, Development): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`. אין צורך במפתח סודי של Supabase.
+- הפונקציות רצות ב-`fra1` (פרנקפורט), קרוב למסד הנתונים ב-`eu-central-1`.
+- Vercel Authentication מוגבל ל-Preview בלבד: אתר הייצור ציבורי, כדי שאורחים יוכלו לפתוח קישורי אישור הגעה.
+- ענף הייצור ב-Vercel הוא `main`. כל עוד הקוד לא מוזג ל-`main`, פריסת ייצור מתבצעת ידנית מהענף שבעבודה.
