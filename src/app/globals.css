@@ -33,6 +33,8 @@
   --color-warning: var(--warning);
   --color-warning-soft: var(--warning-soft);
   --color-track: var(--track);
+  --color-viz-1: var(--viz-1);
+  --color-viz-2: var(--viz-2);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -76,6 +78,8 @@
   --warning: #7e5300;
   --warning-soft: #faefd7;
   --track: #ecebe5;
+  --viz-1: #2a78d6;
+  --viz-2: #eb6834;
   --border: #e4e3dd;
   --input: #dcdbd4;
   --ring: #1f3a93;
@@ -117,6 +121,8 @@
   --warning: #edc173;
   --warning-soft: #33290f;
   --track: #262b35;
+  --viz-1: #3987e5;
+  --viz-2: #d95926;
   --border: #2a2f3a;
   --input: #323845;
   --ring: #9bb0f5;

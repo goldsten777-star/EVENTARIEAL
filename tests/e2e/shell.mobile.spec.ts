@@ -5,7 +5,7 @@ test.use({ storageState: storageState("manager") });
 
 test("sidebar opens as a drawer from the right on phones", async ({ page }) => {
   await page.goto(`/events/${EVENTS.wedding}/dashboard`);
-  const nav = page.getByRole("link", { name: "מוזמנים" });
+  const nav = page.getByRole("link", { name: "מוזמנים", exact: true });
   await expect(nav).toBeHidden();
 
   await page.getByRole("button", { name: "פתיחה וסגירה של התפריט" }).click();
@@ -26,7 +26,12 @@ test("sidebar opens as a drawer from the right on phones", async ({ page }) => {
 
 // A too-wide page makes mobile browsers widen the layout viewport (and zoom
 // out), so innerWidth itself grows: compare it with the device width instead.
-for (const path of ["/events", `/events/${EVENTS.wedding}/guests`, `/events/${EVENTS.wedding}/settings`]) {
+for (const path of [
+  "/events",
+  `/events/${EVENTS.wedding}/dashboard`,
+  `/events/${EVENTS.wedding}/guests`,
+  `/events/${EVENTS.wedding}/settings`,
+]) {
   test(`no horizontal overflow on ${path}`, async ({ page }) => {
     await page.goto(path);
     await page.waitForLoadState("networkidle");
