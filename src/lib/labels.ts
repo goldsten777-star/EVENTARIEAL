@@ -28,3 +28,13 @@ export const EVENT_STATUS_HINTS: Record<Enums["event_status"], string> = {
 
 /** Swatches offered for guest groups (all pass contrast as small chips). */
 export const GROUP_COLORS = ["#1f3a93", "#0e6e52", "#c2554a", "#8a8f99", "#7a4fb5", "#b06a00", "#0f7490", "#a33c6e"];
+
+export const EXPENSE_CATEGORY_LABELS: Record<Enums["expense_category"], string> = {
+  venue: "אולם",
+  catering: "קייטרינג",
+  photography: "צילום",
+  music: "מוזיקה",
+  design: "עיצוב",
+  attractions: "אטרקציות",
+  other: "הוצאות נוספות",
+};
