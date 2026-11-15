@@ -43,6 +43,15 @@ export async function updateSession(request: NextRequest) {
   const user = data?.claims;
 
   const { pathname, search } = request.nextUrl;
+
+  // signed-in users have no business on the login/signup pages
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/events";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   if (!user && !isPublicPath(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

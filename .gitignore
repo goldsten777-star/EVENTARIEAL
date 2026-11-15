@@ -52,3 +52,6 @@ next-env.d.ts
 # supabase local
 supabase/.temp/
 supabase/.branches/
+
+# playwright auth state
+/tests/e2e/.auth/

@@ -28,3 +28,11 @@ npm run dev
 - תפקידים: מנהל מערכת, מנהל אירוע, צפייה בלבד, Check-in (גישה דרך פונקציות RPC בלבד).
 - טיפוסים: `src/types/database.ts` נוצר מהסכמה. יש לחולל מחדש אחרי כל מיגרציה.
 - נתוני בדיקה: `supabase/seed.sql` יוצר משתמש בדיקה לכל תפקיד ושלושה אירועים. **לבדיקות בלבד**. יש להסיר את משתמשי הבדיקה לפני עלייה לאוויר.
+
+## הגדרות Supabase Auth (חד-פעמי, בלוח הבקרה של Supabase)
+
+ב-**Authentication → URL Configuration**:
+- **Site URL**: כתובת האתר בפרודקשן (למשל `https://event-manager.vercel.app`).
+- **Redirect URLs**: להוסיף `http://localhost:3000/**` ואת כתובת הפרודקשן עם `/**`. קישורי אישור ההרשמה ואיפוס הסיסמה חוזרים אל `/auth/callback`.
+
+ב-**Authentication → SMTP Settings**: לפני פתיחה למשתמשים אמיתיים יש לחבר ספק SMTP (למשל Resend). שירות המייל המובנה של Supabase מוגבל לכמה מיילים בשעה.
