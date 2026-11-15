@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckIcon, ChevronsUpDownIcon, LayoutGridIcon } from "lucide-react";
+import { CheckIcon, ChevronsUpDownIcon, LayoutGridIcon, PlusIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,6 +51,11 @@ export function EventSwitcher({ current, events }: { current: SwitcherEvent; eve
         <DropdownMenuItem asChild>
           <Link href="/events">
             <LayoutGridIcon aria-hidden="true" /> כל האירועים
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/events?new=1">
+            <PlusIcon aria-hidden="true" /> אירוע חדש
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

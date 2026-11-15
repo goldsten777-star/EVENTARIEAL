@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarIcon, CalendarPlusIcon, MapPinIcon } from "lucide-react";
+import { CreateEventDialog } from "@/components/events/create-event-dialog";
+import { FormAlert } from "@/components/forms/form-alert";
 import { TopBar } from "@/components/layout/top-bar";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +13,8 @@ import { countdownLabel, daysUntil, formatDate } from "@/lib/format";
 
 export const metadata: Metadata = { title: "האירועים שלי" };
 
-export default async function EventsPage() {
-  const [user, events] = await Promise.all([requireUser(), getMyEvents()]);
+export default async function EventsPage({ searchParams }: PageProps<"/events">) {
+  const [user, events, query] = await Promise.all([requireUser(), getMyEvents(), searchParams]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -21,7 +23,10 @@ export default async function EventsPage() {
         <PageHeader
           title="האירועים שלי"
           description={user.fullName ? `שלום ${user.fullName}` : undefined}
+          actions={events.length ? <CreateEventDialog defaultOpen={query.new === "1"} /> : null}
         />
+
+        {query.deleted ? <FormAlert ok message="האירוע נמחק" /> : null}
 
         {events.length === 0 ? (
           <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed bg-card px-6 py-16 text-center">
@@ -30,8 +35,9 @@ export default async function EventsPage() {
             </span>
             <h2 className="text-lg font-semibold">עוד אין לך אירועים</h2>
             <p className="max-w-md text-sm text-muted-foreground">
-              יצירת אירועים תתווסף במודול הבא. אם הוזמנת לצוות של אירוע, הוא יופיע כאן אוטומטית.
+              צרו את האירוע הראשון שלכם. אם צירפו אתכם לצוות של אירוע קיים, הוא יופיע כאן אוטומטית.
             </p>
+            <CreateEventDialog defaultOpen={query.new === "1"} />
           </div>
         ) : (
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
