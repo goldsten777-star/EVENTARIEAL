@@ -1,0 +1,24 @@
+"use client";
+
+import { ThemeProvider } from "next-themes";
+import { DirectionProvider } from "@/components/ui/direction";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <DirectionProvider dir="rtl">
+        <TooltipProvider delayDuration={300}>
+          {children}
+          <Toaster position="top-center" dir="rtl" richColors closeButton />
+        </TooltipProvider>
+      </DirectionProvider>
+    </ThemeProvider>
+  );
+}
