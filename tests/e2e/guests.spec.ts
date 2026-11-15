@@ -203,3 +203,26 @@ test.describe("viewer", () => {
     await expect(sheet(page).getByRole("button", { name: /שמירה|שמירת השינויים/ })).toHaveCount(0);
   });
 });
+
+test("each guest has a personal link, WhatsApp message and QR", async ({ page }) => {
+  await page.goto(GUESTS);
+  await search(page, "0511000037");
+  const row = rows(page).first();
+
+  const wa = row.getByRole("link", { name: "שליחת הזמנה ב-WhatsApp למיכל אזולאי" });
+  const href = (await wa.getAttribute("href"))!;
+  expect(href).toMatch(/^https:\/\/wa\.me\/972511000037\?text=/);
+  const text = decodeURIComponent(href.split("?text=")[1]);
+  expect(text).toContain("שלום מיכל אזולאי");
+  expect(text).toMatch(/\/r\/[A-Za-z0-9_-]{24}/);
+
+  await row.getByRole("button", { name: "עריכת מיכל אזולאי" }).click();
+  const link = await sheet(page).getByLabel("קישור אישי לאישור הגעה").inputValue();
+  expect(text).toContain(link);
+  await expect(sheet(page).getByRole("img", { name: "קוד QR לאישור ההגעה של מיכל אזולאי" })).toBeVisible();
+  await expect(sheet(page).getByRole("link", { name: "שליחה ב-WhatsApp" })).toHaveAttribute("href", href);
+
+  // the link opens the guest's RSVP page
+  await page.goto(new URL(link).pathname);
+  await expect(page.getByText("שלום מיכל אזולאי,")).toBeVisible();
+});

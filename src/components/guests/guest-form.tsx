@@ -16,6 +16,7 @@ import { RSVP_LABELS } from "@/lib/labels-guests";
 import { formatPhone, normalizePhone } from "@/lib/phone";
 import { cn } from "@/lib/utils";
 import { DIETARY_OPTIONS, guestFormInput, guestSchema } from "@/lib/validation/guest";
+import { InvitePanel, type InviteContext } from "./invite-actions";
 import type { Group, Guest, SeatingTable } from "./types";
 
 const NONE = "__none__";
@@ -44,6 +45,7 @@ export function GuestForm({
   readOnly,
   onSaved,
   footerExtra,
+  invite,
 }: {
   eventId: string;
   guest: Guest | null;
@@ -53,6 +55,7 @@ export function GuestForm({
   readOnly: boolean;
   onSaved: (addAnother: boolean) => void;
   footerExtra?: React.ReactNode;
+  invite?: InviteContext;
 }) {
   const { state, errors, message, ok, formProps, pending } = useValidatedAction(
     saveGuest.bind(null, eventId, guest?.id ?? null),
@@ -102,6 +105,7 @@ export function GuestForm({
   return (
     <form {...formProps} className="flex flex-col gap-6">
       {!ok ? <FormAlert message={message} /> : null}
+      {guest && invite && !readOnly ? <InvitePanel ctx={invite} guest={guest} /> : null}
 
       <fieldset disabled={readOnly} className="flex flex-col gap-6">
         <Section title="פרטי המוזמן">

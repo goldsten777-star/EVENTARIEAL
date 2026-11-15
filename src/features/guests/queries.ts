@@ -2,7 +2,7 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 
 export const GUEST_COLUMNS =
-  "id, first_name, last_name, phone, email, group_id, inviter_name, invited_adults, invited_children, reserved_seats, invitation_status, rsvp_status, confirmed_adults, confirmed_children, rsvp_note, table_id, dietary_tags, dietary_notes, notes, seats_needed, checked_in_at, created_at";
+  "id, first_name, last_name, phone, email, group_id, inviter_name, invited_adults, invited_children, reserved_seats, invitation_status, rsvp_status, confirmed_adults, confirmed_children, rsvp_note, table_id, dietary_tags, dietary_notes, notes, seats_needed, checked_in_at, created_at, invite_token";
 
 export async function getGuestsPageData(eventId: string) {
   const supabase = await createClient();

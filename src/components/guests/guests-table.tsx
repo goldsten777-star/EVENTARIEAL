@@ -24,6 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { INVITATION_LABELS, RSVP_LABELS, RSVP_TONE } from "@/lib/labels-guests";
 import { formatPhone } from "@/lib/phone";
 import { cn } from "@/lib/utils";
+import { WhatsAppButton, type InviteContext } from "./invite-actions";
 import type { Group, Guest, SeatingTable } from "./types";
 
 export type GuestView = Guest & { group: Group | null; table: SeatingTable | null; fullName: string };
@@ -178,21 +179,29 @@ const columns = helper.columns([
   helper.display({
     id: "actions",
     header: () => <span className="sr-only">פעולות</span>,
-    cell: () => (
-      <PencilIcon className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100" aria-hidden="true" />
-    ),
+    cell: ({ row, table }) => {
+      const invite = (table.options.meta as { invite?: InviteContext } | undefined)?.invite;
+      return (
+        <div className="flex items-center justify-end gap-1">
+          {invite ? <WhatsAppButton ctx={invite} guest={row.original} /> : null}
+          <PencilIcon className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100" aria-hidden="true" />
+        </div>
+      );
+    },
   }),
 ]);
 
 export function GuestsTable({
   data,
   canManage,
+  invite,
   rowSelection,
   onRowSelectionChange,
   onOpen,
 }: {
   data: GuestView[];
   canManage: boolean;
+  invite: InviteContext;
   rowSelection: RowSelectionState;
   onRowSelectionChange: (updater: RowSelectionState | ((old: RowSelectionState) => RowSelectionState)) => void;
   onOpen: (guest: GuestView) => void;
@@ -210,6 +219,7 @@ export function GuestsTable({
     onPaginationChange: setPagination,
     onRowSelectionChange,
     enableRowSelection: canManage,
+    meta: { invite },
   });
 
   const rows = table.getRowModel().rows;

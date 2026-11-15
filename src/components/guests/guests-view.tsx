@@ -48,6 +48,7 @@ function digits(s: string) {
 export function GuestsView({
   eventId,
   eventName,
+  invitationTemplate,
   guests,
   groups,
   tables,
@@ -55,6 +56,7 @@ export function GuestsView({
 }: {
   eventId: string;
   eventName: string;
+  invitationTemplate: string | null;
   guests: Guest[];
   groups: Group[];
   tables: SeatingTable[];
@@ -71,6 +73,10 @@ export function GuestsView({
   });
   const [confirmDelete, setConfirmDelete] = useState<string[] | null>(null);
   const [pending, start] = useTransition();
+  const invite = useMemo(
+    () => ({ eventId, eventName, template: invitationTemplate }),
+    [eventId, eventName, invitationTemplate],
+  );
 
   const groupById = useMemo(() => new Map(groups.map((g) => [g.id, g])), [groups]);
   const tableById = useMemo(() => new Map(tables.map((t) => [t.id, t])), [tables]);
@@ -315,6 +321,7 @@ export function GuestsView({
           <GuestsTable
             data={filtered}
             canManage={canManage}
+            invite={invite}
             rowSelection={rowSelection}
             onRowSelectionChange={setRowSelection}
             onOpen={openGuest}
@@ -341,6 +348,7 @@ export function GuestsView({
               groups={groups}
               tables={tables}
               readOnly={!canManage}
+              invite={invite}
               onSaved={(addAnother) =>
                 addAnother ? setSheet((s) => ({ open: true, guest: null, key: s.key + 1 })) : setSheet((s) => ({ ...s, open: false }))
               }
