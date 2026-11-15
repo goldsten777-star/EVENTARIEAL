@@ -28,7 +28,7 @@ export default async function EventLayout({ children, params }: LayoutProps<"/ev
         }}
       />
       <SidebarInset className="min-w-0">
-        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur sm:px-6">
+        <header data-print="hide" className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur sm:px-6">
           <SidebarTrigger className="-ms-1 size-9" aria-label="פתיחה וסגירה של התפריט" />
           <span className="truncate font-semibold">{event.name}</span>
           <Badge variant="secondary" className="ms-auto shrink-0">

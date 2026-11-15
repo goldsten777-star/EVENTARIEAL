@@ -155,3 +155,27 @@
     @apply font-sans;
   }
 }
+/* Printing: only the page content, black on white */
+@media print {
+  [data-slot="sidebar"],
+  [data-slot="sidebar-gap"],
+  [data-print="hide"] {
+    display: none !important;
+  }
+  html,
+  body,
+  [data-slot="sidebar-wrapper"],
+  [data-slot="sidebar-inset"] {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  [data-print="section"] {
+    break-inside: auto;
+  }
+  [data-print="section"] tr {
+    break-inside: avoid;
+  }
+  @page {
+    margin: 14mm;
+  }
+}

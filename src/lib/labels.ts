@@ -38,3 +38,14 @@ export const EXPENSE_CATEGORY_LABELS: Record<Enums["expense_category"], string> 
   attractions: "אטרקציות",
   other: "הוצאות נוספות",
 };
+
+export const PAYMENT_METHOD_LABELS: Record<Enums["payment_method"], string> = {
+  cash: "מזומן",
+  check: "צ׳ק",
+  bit: "ביט",
+  paybox: "פייבוקס",
+  bank_transfer: "העברה בנקאית",
+  credit_card: "כרטיס אשראי",
+  gift_item: "מתנה (לא כספית)",
+  other: "אחר",
+};
