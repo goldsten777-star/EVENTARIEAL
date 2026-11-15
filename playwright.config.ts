@@ -16,6 +16,8 @@ export default defineConfig({
   workers: 2,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",
+  // a deployed site answers over the internet: allow more time than localhost
+  expect: { timeout: process.env.E2E_BASE_URL ? 15_000 : 5_000 },
   use: {
     baseURL,
     locale: "he-IL",
