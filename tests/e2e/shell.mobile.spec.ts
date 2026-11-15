@@ -30,6 +30,7 @@ for (const path of [
   "/events",
   `/events/${EVENTS.wedding}/dashboard`,
   `/events/${EVENTS.wedding}/guests`,
+  `/events/${EVENTS.wedding}/gifts`,
   `/events/${EVENTS.wedding}/settings`,
 ]) {
   test(`no horizontal overflow on ${path}`, async ({ page }) => {

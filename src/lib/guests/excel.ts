@@ -4,6 +4,7 @@
  * Excel helpers that run in the browser. exceljs (~1 MB) is loaded only when
  * the user actually exports or imports.
  */
+import { downloadBuffer as download, loadExcel, safeFileName, styleHeader } from "@/lib/excel/export";
 import { formatPhone } from "@/lib/phone";
 import { IMPORT_FIELDS } from "@/lib/guests/import";
 import { INVITATION_LABELS, RSVP_LABELS } from "@/lib/labels-guests";
@@ -32,27 +33,6 @@ export type ExportGuest = {
   tableNumber: number | null;
 };
 
-async function loadExcel() {
-  const mod = await import("exceljs");
-  return (mod.default ?? mod) as typeof import("exceljs");
-}
-
-function download(buffer: ArrayBuffer, filename: string) {
-  const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function safeFileName(name: string) {
-  return name.replace(/[\\/:*?"<>|]+/g, " ").trim() || "אירוע";
-}
-
 const COLUMNS: Array<{ header: string; width: number; value: (g: ExportGuest) => string | number }> = [
   { header: "שם פרטי", width: 16, value: (g) => g.first_name },
   { header: "שם משפחה", width: 16, value: (g) => g.last_name },
@@ -73,13 +53,6 @@ const COLUMNS: Array<{ header: string; width: number; value: (g: ExportGuest) =>
   { header: "הערות", width: 24, value: (g) => g.notes ?? "" },
   { header: "הערת האורח", width: 24, value: (g) => g.rsvp_note ?? "" },
 ];
-
-function styleHeader(row: import("exceljs").Row) {
-  row.font = { bold: true, color: { argb: "FFFFFFFF" } };
-  row.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F3A93" } };
-  row.alignment = { vertical: "middle", horizontal: "right" };
-  row.height = 22;
-}
 
 export async function exportGuestsToExcel(eventName: string, guests: ExportGuest[]) {
   const ExcelJS = await loadExcel();
