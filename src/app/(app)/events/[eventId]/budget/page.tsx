@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { ModulePlaceholder } from "@/components/layout/module-placeholder";
+import { BudgetView } from "@/components/budget/budget-view";
+import { getBudgetPageData } from "@/features/budget/queries";
 import { requireEventSection } from "@/lib/auth/access";
+import { can } from "@/lib/auth/permissions";
 
 export const metadata: Metadata = { title: "תקציב" };
 
-export default async function Page({ params }: PageProps<"/events/[eventId]/budget">) {
+export default async function BudgetPage({ params }: PageProps<"/events/[eventId]/budget">) {
   const { eventId } = await params;
-  await requireEventSection(eventId, "budget");
-  return <ModulePlaceholder title="תקציב" description="הוצאות לפי קטגוריה ותקציב מתוכנן מול בפועל יתווספו במודול 9." />;
+  const access = await requireEventSection(eventId, "budget");
+  const data = await getBudgetPageData(eventId);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" }).format(new Date());
+  return <BudgetView eventId={eventId} eventName={access.event.name} data={data} canManage={can(access.role, "manage")} today={today} />;
 }
