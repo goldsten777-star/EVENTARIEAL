@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { EVENTS, loginThroughForm, storageState } from "./fixtures";
+import { EVENTS, loginThroughForm, seedAdminIsPlatformAdmin, storageState } from "./fixtures";
 
 // Next.js renders an empty role="alert" route announcer; skip it
 const formAlert = (page: Page) => page.locator('[role="alert"]:not(#__next-route-announcer__)');
@@ -171,6 +171,8 @@ test.describe("platform admin", () => {
   test.use({ storageState: storageState("admin") });
 
   test("sees every event and the admin area", async ({ page }) => {
+    // in production the owner's own account is the only platform admin
+    test.skip(!(await seedAdminIsPlatformAdmin()), "admin@example.com is not a platform admin in this database");
     await page.goto("/events");
     await expect(page.getByRole("link", { name: /כנס לקוחות שנתי/ })).toBeVisible();
     await expect(page.getByRole("link", { name: /חתונת נועה ואיתי/ })).toBeVisible();

@@ -1,3 +1,4 @@
+import { createClient } from "@supabase/supabase-js";
 import { expect, type Page } from "@playwright/test";
 
 export const EVENTS = {
@@ -23,4 +24,15 @@ export async function loginThroughForm(page: Page, role: Role, next?: string) {
   await page.getByLabel("סיסמה", { exact: true }).fill(password());
   await page.getByRole("button", { name: "התחברות" }).click();
   await expect(page).not.toHaveURL(/\/login/);
+}
+
+/** True when the seeded admin@example.com is a platform admin in the target database. */
+export async function seedAdminIsPlatformAdmin() {
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!, {
+    auth: { persistSession: false },
+  });
+  const { data: auth } = await supabase.auth.signInWithPassword({ email: "admin@example.com", password: password() });
+  if (!auth.user) return false;
+  const { data } = await supabase.from("profiles").select("is_platform_admin").eq("id", auth.user.id).single();
+  return !!data?.is_platform_admin;
 }
