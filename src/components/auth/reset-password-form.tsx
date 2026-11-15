@@ -9,14 +9,14 @@ import { FieldGroup } from "@/components/ui/field";
 import { passwordRules, resetPasswordSchema } from "@/lib/validation/auth";
 
 export function ResetPasswordForm() {
-  const { formAction, onSubmit, errors, message, ok } = useValidatedAction(
+  const { errors, message, ok, formProps, pending } = useValidatedAction(
     resetPassword,
     resetPasswordSchema,
     (fd) => ({ password: fd.get("password"), confirmPassword: fd.get("confirmPassword") }),
   );
 
   return (
-    <form action={formAction} onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
+    <form {...formProps} className="flex flex-col gap-6">
       <FormAlert ok={ok} message={message} />
       <FieldGroup>
         <TextField
@@ -37,7 +37,7 @@ export function ResetPasswordForm() {
           required
         />
       </FieldGroup>
-      <SubmitButton pendingText="שומרים…" className="w-full">
+      <SubmitButton pending={pending} pendingText="שומרים…" className="w-full">
         שמירת סיסמה חדשה
       </SubmitButton>
     </form>

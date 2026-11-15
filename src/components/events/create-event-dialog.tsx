@@ -21,17 +21,17 @@ import {
 import { eventFormInput, eventSchema } from "@/lib/validation/event";
 
 function CreateEventForm() {
-  const { state, formAction, onSubmit, errors, message, ok } = useValidatedAction(
+  const { state, errors, message, ok, formProps, pending } = useValidatedAction(
     createEvent,
     eventSchema,
     eventFormInput,
   );
   return (
-    <form action={formAction} onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
+    <form {...formProps} className="flex flex-col gap-6">
       <FormAlert ok={ok} message={message} />
       <EventFormFields values={state.values ?? {}} errors={errors} />
       <DialogFooter className="gap-2 sm:justify-start">
-        <SubmitButton pendingText="יוצרים…">יצירת האירוע</SubmitButton>
+        <SubmitButton pending={pending} pendingText="יוצרים…">יצירת האירוע</SubmitButton>
         <DialogClose asChild>
           <Button type="button" variant="outline" size="lg">
             ביטול

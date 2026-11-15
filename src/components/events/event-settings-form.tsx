@@ -14,7 +14,7 @@ import { EVENT_STATUS_HINTS, EVENT_STATUS_LABELS } from "@/lib/labels";
 import { eventFormInput, eventSettingsSchema } from "@/lib/validation/event";
 
 export function EventSettingsForm({ eventId, initial }: { eventId: string; initial: EventFormValues }) {
-  const { state, formAction, onSubmit, errors, message, ok } = useValidatedAction(
+  const { state, errors, message, ok, formProps, pending } = useValidatedAction(
     updateEvent.bind(null, eventId),
     eventSettingsSchema,
     eventFormInput,
@@ -24,10 +24,11 @@ export function EventSettingsForm({ eventId, initial }: { eventId: string; initi
     if (state.ok && state.message) toast.success(state.message);
   }, [state]);
 
-  const values = initial;
+  // React resets uncontrolled fields after each submit; the server echoes them back
+  const values = state.values ?? initial;
 
   return (
-    <form action={formAction} onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
+    <form {...formProps} className="flex flex-col gap-6">
       {!ok ? <FormAlert message={message} /> : null}
       {/* uncontrolled fields keep what the user typed across saves and errors */}
       <div className="flex flex-col gap-5">
@@ -76,7 +77,7 @@ export function EventSettingsForm({ eventId, initial }: { eventId: string; initi
       </div>
 
       <div>
-        <SubmitButton pendingText="שומרים…">שמירת השינויים</SubmitButton>
+        <SubmitButton pending={pending} pendingText="שומרים…">שמירת השינויים</SubmitButton>
       </div>
     </form>
   );

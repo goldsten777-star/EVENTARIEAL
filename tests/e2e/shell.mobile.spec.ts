@@ -24,8 +24,14 @@ test("sidebar opens as a drawer from the right on phones", async ({ page }) => {
   await expect(page.getByRole("dialog")).toBeHidden();
 });
 
-test("no horizontal scrolling on the events page", async ({ page }) => {
-  await page.goto("/events");
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  expect(overflow).toBeLessThanOrEqual(0);
-});
+// A too-wide page makes mobile browsers widen the layout viewport (and zoom
+// out), so innerWidth itself grows: compare it with the device width instead.
+for (const path of ["/events", `/events/${EVENTS.wedding}/guests`, `/events/${EVENTS.wedding}/settings`]) {
+  test(`no horizontal overflow on ${path}`, async ({ page }) => {
+    await page.goto(path);
+    await page.waitForLoadState("networkidle");
+    const width = await page.evaluate(() => ({ layout: window.innerWidth, doc: document.documentElement.scrollWidth }));
+    expect(width.layout).toBe(page.viewportSize()!.width);
+    expect(width.doc).toBeLessThanOrEqual(page.viewportSize()!.width);
+  });
+}

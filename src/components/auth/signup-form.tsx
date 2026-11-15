@@ -10,7 +10,7 @@ import { FieldGroup } from "@/components/ui/field";
 import { passwordRules, signupSchema } from "@/lib/validation/auth";
 
 export function SignupForm() {
-  const { state, formAction, onSubmit, errors, message, ok } = useValidatedAction(
+  const { state, errors, message, ok, formProps, pending } = useValidatedAction(
     signup,
     signupSchema,
     (fd) => ({
@@ -35,7 +35,7 @@ export function SignupForm() {
   }
 
   return (
-    <form action={formAction} onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
+    <form {...formProps} className="flex flex-col gap-6">
       <FormAlert ok={false} message={message} />
       <FieldGroup>
         <TextField
@@ -73,7 +73,7 @@ export function SignupForm() {
           required
         />
       </FieldGroup>
-      <SubmitButton pendingText="יוצרים חשבון…" className="w-full">
+      <SubmitButton pending={pending} pendingText="יוצרים חשבון…" className="w-full">
         יצירת חשבון
       </SubmitButton>
     </form>

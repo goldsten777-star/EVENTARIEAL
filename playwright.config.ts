@@ -16,7 +16,13 @@ export default defineConfig({
   workers: 2,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",
-  use: { baseURL, locale: "he-IL", trace: "off" },
+  use: {
+    baseURL,
+    locale: "he-IL",
+    trace: "off",
+    // Chromium needs a UTF-8 system locale to keep Hebrew download file names
+    launchOptions: { env: { ...process.env, LANG: "C.UTF-8", LC_ALL: "C.UTF-8" } },
+  },
   projects: [
     // signs each seeded role in once and saves the session for the other tests
     { name: "setup", testMatch: /auth\.setup\.ts/ },

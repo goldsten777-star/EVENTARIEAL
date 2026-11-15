@@ -8,9 +8,11 @@ export function SubmitButton({
   children,
   pendingText,
   className,
+  pending: pendingProp,
   ...props
-}: React.ComponentProps<typeof Button> & { pendingText?: string }) {
-  const { pending } = useFormStatus();
+}: React.ComponentProps<typeof Button> & { pendingText?: string; pending?: boolean }) {
+  const status = useFormStatus();
+  const pending = pendingProp ?? status.pending;
   return (
     <Button type="submit" size="lg" disabled={pending} aria-busy={pending} className={className} {...props}>
       {pending ? <Loader2Icon className="animate-spin" aria-hidden="true" /> : null}

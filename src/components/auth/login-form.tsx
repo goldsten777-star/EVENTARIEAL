@@ -10,14 +10,14 @@ import { FieldGroup } from "@/components/ui/field";
 import { loginSchema } from "@/lib/validation/auth";
 
 export function LoginForm({ next, notice }: { next?: string; notice?: string }) {
-  const { state, formAction, onSubmit, errors, message, ok } = useValidatedAction(
+  const { state, errors, message, ok, formProps, pending } = useValidatedAction(
     login,
     loginSchema,
     (fd) => ({ email: fd.get("email"), password: fd.get("password") }),
   );
 
   return (
-    <form action={formAction} onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
+    <form {...formProps} className="flex flex-col gap-6">
       <input type="hidden" name="next" value={next ?? ""} />
       <FormAlert ok={ok} message={message ?? notice} />
       <FieldGroup>
@@ -44,7 +44,7 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
           </Link>
         </div>
       </FieldGroup>
-      <SubmitButton pendingText="מתחברים…" className="w-full">
+      <SubmitButton pending={pending} pendingText="מתחברים…" className="w-full">
         התחברות
       </SubmitButton>
     </form>
