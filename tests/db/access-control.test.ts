@@ -422,6 +422,50 @@ describe("check-in staff", () => {
     expect(row!.checked_in_at).toBeNull();
   });
 
+  it("reads the arrival counter and a single guest card through RPCs only", async () => {
+    const guest = await createGuest({ adults: 2, children: 0 });
+    const before = await checkin.rpc("checkin_stats", { p_event_id: EVENTS.wedding });
+    expect(before.error).toBeNull();
+    const b = before.data as Record<string, number>;
+    expect(b.expected_people).toBeGreaterThan(0);
+
+    const card = await checkin.rpc("checkin_get_guest", { p_event_id: EVENTS.wedding, p_guest_id: guest.id });
+    expect(card.error).toBeNull();
+    expect(card.data).toHaveLength(1);
+    expect(card.data![0]).toMatchObject({ id: guest.id, last_name: guest.last_name, checked_in_at: null });
+    expect(Object.keys(card.data![0])).not.toContain("invite_token");
+
+    await checkin.rpc("check_in_guest", { p_event_id: EVENTS.wedding, p_guest_id: guest.id, p_arrived_count: 2 });
+    cleanup.push(() => manager.rpc("undo_check_in", { p_event_id: EVENTS.wedding, p_guest_id: guest.id }));
+    const after = (await checkin.rpc("checkin_stats", { p_event_id: EVENTS.wedding })).data as Record<string, unknown>;
+    expect(after.arrived_parties).toBe(b.arrived_parties + 1);
+    expect(after.arrived_people).toBe(b.arrived_people + 2);
+    expect(after.last_check_in_at).toBeTruthy();
+
+    // a guest of another event is not found from this event
+    const other = await createGuest({ event: EVENTS.barMitzvah });
+    const cross = await checkin.rpc("checkin_get_guest", { p_event_id: EVENTS.wedding, p_guest_id: other.id });
+    expect(cross.data).toEqual([]);
+  });
+
+  it("keeps the door RPCs away from viewers, outsiders and other events", async () => {
+    for (const [client, event] of [
+      [viewer, EVENTS.wedding],
+      [outsider, EVENTS.wedding],
+      [checkin, EVENTS.barMitzvah],
+    ] as const) {
+      const stats = await client.rpc("checkin_stats", { p_event_id: event });
+      expect(stats.error?.code).toBe("42501");
+      const card = await client.rpc("checkin_get_guest", {
+        p_event_id: event,
+        p_guest_id: "00000000-0000-4000-c000-000000000000",
+      });
+      expect(card.error?.code).toBe("42501");
+    }
+    const anon = await anonClient().rpc("checkin_stats", { p_event_id: EVENTS.wedding });
+    expect(anon.error).not.toBeNull();
+  });
+
   it("cannot check in at another event", async () => {
     const { error } = await checkin.rpc("checkin_search", { p_event_id: EVENTS.barMitzvah });
     expect(error?.code).toBe("42501");

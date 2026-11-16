@@ -604,6 +604,23 @@ export type Database = {
         Args: { p_event_id: string; p_token: string }
         Returns: string
       }
+      checkin_get_guest: {
+        Args: { p_event_id: string; p_guest_id: string }
+        Returns: {
+          arrived_count: number
+          checked_in_at: string
+          dietary_tags: string[]
+          expected: number
+          first_name: string
+          group_name: string
+          id: string
+          last_name: string
+          phone: string
+          rsvp_status: Database["public"]["Enums"]["rsvp_status"]
+          table_name: string
+          table_number: number
+        }[]
+      }
       checkin_search: {
         Args: { p_event_id: string; p_query?: string }
         Returns: {
@@ -621,6 +638,7 @@ export type Database = {
           table_number: number
         }[]
       }
+      checkin_stats: { Args: { p_event_id: string }; Returns: Json }
       event_stats: { Args: { p_event_id: string }; Returns: Json }
       get_rsvp: { Args: { p_token: string }; Returns: Json }
       guest_seats: {
