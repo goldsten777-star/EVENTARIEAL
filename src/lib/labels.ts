@@ -49,3 +49,9 @@ export const PAYMENT_METHOD_LABELS: Record<Enums["payment_method"], string> = {
   gift_item: "מתנה (לא כספית)",
   other: "אחר",
 };
+
+export const TABLE_SHAPE_LABELS: Record<Enums["table_shape"], string> = {
+  round: "עגול",
+  rectangle: "מלבני",
+  knight: "אבירים",
+};
