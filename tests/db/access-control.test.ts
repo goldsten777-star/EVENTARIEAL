@@ -519,6 +519,38 @@ describe("platform admin", () => {
     expect(ids).toEqual(expect.arrayContaining(Object.values(EVENTS)));
   });
 
+  it("reads the admin overview with sign-in data", async (ctx) => {
+    const { data: me } = await admin.from("profiles").select("is_platform_admin").eq("id", USERS.admin.id).single();
+    if (!me?.is_platform_admin) ctx.skip("admin@example.com is not a platform admin in this database");
+
+    const { data, error } = await admin.rpc("admin_overview");
+    expect(error).toBeNull();
+    const o = data as { users: Array<Record<string, unknown>>; events: Array<Record<string, unknown>> };
+    const manager = o.users.find((u) => u.id === USERS.manager.id)!;
+    expect(manager).toMatchObject({ email: USERS.manager.email, email_confirmed: true, events_owned: 2 });
+    expect(manager).toHaveProperty("last_sign_in_at");
+    expect(o.events.map((e) => e.id)).toEqual(expect.arrayContaining(Object.values(EVENTS)));
+    expect(o.events.find((e) => e.id === EVENTS.wedding)).toMatchObject({ owner_id: USERS.manager.id });
+  });
+
+  it("keeps the admin overview and admin rights away from everyone else", async () => {
+    for (const [name, client] of [
+      ["manager", manager],
+      ["viewer", viewer],
+      ["checkin", checkin],
+      ["outsider", outsider],
+    ] as const) {
+      const overview = await client.rpc("admin_overview");
+      expect(overview.error?.code, name).toBe("42501");
+      const grant = await client.rpc("set_platform_admin", { p_user_id: USERS.outsider.id, p_is_admin: true });
+      expect(grant.error?.code, name).toBe("42501");
+    }
+    const anon = await anonClient().rpc("admin_overview");
+    expect(anon.error).not.toBeNull();
+    const { data } = await manager.from("profiles").select("is_platform_admin").eq("id", USERS.manager.id).single();
+    expect(data!.is_platform_admin).toBe(false);
+  });
+
   it("sees teammates' profiles as a viewer would not", async () => {
     const { data } = await viewer.from("profiles").select("id");
     // viewer shares the wedding with manager and checkin

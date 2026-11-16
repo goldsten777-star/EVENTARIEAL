@@ -592,6 +592,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_overview: { Args: never; Returns: Json }
       check_in_guest: {
         Args: {
           p_arrived_count: number
