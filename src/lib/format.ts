@@ -47,3 +47,9 @@ export function formatCurrency(value: number | null | undefined) {
 export function formatNumber(value: number | null | undefined) {
   return new Intl.NumberFormat("he-IL").format(value ?? 0);
 }
+
+/** Clock time in Israel, e.g. "19:42". */
+export function formatTime(iso: string | null | undefined) {
+  if (!iso) return "";
+  return new Intl.DateTimeFormat("he-IL", { timeZone: TZ, hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+}

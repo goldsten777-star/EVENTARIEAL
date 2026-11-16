@@ -32,6 +32,7 @@ for (const path of [
   `/events/${EVENTS.wedding}/guests`,
   `/events/${EVENTS.wedding}/gifts`,
   `/events/${EVENTS.wedding}/budget`,
+  `/events/${EVENTS.wedding}/checkin`,
   `/events/${EVENTS.wedding}/reports`,
   `/events/${EVENTS.wedding}/reports/seating`,
   `/events/${EVENTS.wedding}/settings`,
